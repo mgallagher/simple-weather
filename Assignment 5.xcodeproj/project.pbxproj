@@ -81,8 +81,6 @@
 		4C4BFDAE1A9D5FDF00FE845D /* Assignment 5 */ = {
 			isa = PBXGroup;
 			children = (
-				4C4BFDB31A9D5FDF00FE845D /* AppDelegate.h */,
-				4C4BFDB41A9D5FDF00FE845D /* AppDelegate.m */,
 				4C4BFDB61A9D5FDF00FE845D /* ViewController.h */,
 				4C4BFDB71A9D5FDF00FE845D /* ViewController.m */,
 				4C4BFDB91A9D5FDF00FE845D /* Main.storyboard */,
@@ -96,6 +94,8 @@
 		4C4BFDAF1A9D5FDF00FE845D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4C4BFDB31A9D5FDF00FE845D /* AppDelegate.h */,
+				4C4BFDB41A9D5FDF00FE845D /* AppDelegate.m */,
 				4C4BFDB01A9D5FDF00FE845D /* Info.plist */,
 				4C4BFDB11A9D5FDF00FE845D /* main.m */,
 			);
