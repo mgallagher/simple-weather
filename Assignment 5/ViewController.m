@@ -7,9 +7,10 @@
 //
 
 #import "ViewController.h"
+#import "WeatherForecastCell.h"
 #import <CoreLocation/CoreLocation.h>
 
-@interface ViewController () <CLLocationManagerDelegate>
+@interface ViewController () <CLLocationManagerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) CGFloat latitude;
 @property (nonatomic) CGFloat longitude;
@@ -17,13 +18,16 @@
 @property (nonatomic, strong) NSArray *maxTemps;
 @property (nonatomic, strong) NSArray *minTemps;
 @property (nonatomic, strong) NSArray *unixDates;
-@property (nonatomic, strong) NSMutableArray *actualDates;
+@property (nonatomic, strong) NSMutableArray *daysOfWeek;
 @property (nonatomic, strong) NSMutableArray *weatherIcons;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (weak, nonatomic) IBOutlet UICollectionView *thing;
 @property (weak, nonatomic) IBOutlet UICollectionView *test;
 @property (nonatomic, retain) NSDictionary *jsonResponse;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic) int count;
+@property BOOL networkBeenCalled;
 
 @end
 
@@ -35,29 +39,26 @@
     if(self)
     {
         self.view.backgroundColor = [UIColor whiteColor];
-//        [self setUpLocationGetter];
-        [self getWeatherForecast];
+        self.count = 0;
+        self.networkBeenCalled = NO;
+        [self setUpLocationGetter];
+//        [self getWeatherForecast];
+//        [self setUpCollectionView];
     }
-    NSLog(@"Done with program");
     return self;
 }
 
 -(void)getWeatherForecast
 {
-    self.latitude = 41.681599;
-    self.longitude = -111.822998;
-    
+    self.networkBeenCalled = YES;
     NSURLSession *session = [NSURLSession sharedSession];
     NSString *weatherRequest = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&units=imperial&APPID=3c045718f8871c3007d06f0e24cb09e2", self.latitude, self.longitude];
-    NSLog(@"URL: %@", weatherRequest);
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:weatherRequest]];
-
 //    lat: 41.681599
 //    lon: -111.822998
-
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:
         ^(NSData *data, NSURLResponse *response, NSError *error) {
-            // Begin magical block lol
+            // Begin magical block
             self.jsonResponse = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             self.cityName = [self.jsonResponse valueForKeyPath:@"city.name"];
             self.maxTemps = [self.jsonResponse valueForKeyPath:@"list.temp.max"];
@@ -69,37 +70,70 @@
             }
             NSArray *unixDates = [self.jsonResponse valueForKeyPath:@"list.dt"];
             [self convertDates:unixDates];
+            NSLog(@"Done parsing JSON");
+            // Collection View
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setUpCollectionView];
+            });
             
-            // End block
-    }];
+        }];
     [dataTask resume];
+}
+
+-(void)setUpCollectionView
+{
+//    self.numberArray = @[@"1", @"2", @"4", @"3", @"5"];
+    self.collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
+    // contentInset -> gives a boarder to the collectionview
+    self.collectionView.contentInset = UIEdgeInsetsMake(170, 30, 0, 30);
+    [self.collectionView registerClass:[WeatherForecastCell class] forCellWithReuseIdentifier:@"cell"];
+    [self.view addSubview:self.collectionView];
+    NSLog(@"done with collection view");
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    
+    return self.daysOfWeek.count-1;
+//    return 6;
+}
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(145, 145);
+}
+
+-(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    WeatherForecastCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    cell.backgroundColor = [UIColor grayColor];
+    [cell setDayLabel:[self.daysOfWeek objectAtIndex:self.count]];
+    self.count++;
+    return cell;
 }
 
 -(void)convertDates:(NSArray*) dates
 {
-    self.actualDates = [[NSMutableArray alloc] init];
+    self.daysOfWeek = [[NSMutableArray alloc] init];
     for (id day in dates)
     {
         NSDate *unixTime = [NSDate dateWithTimeIntervalSince1970:[day intValue]];
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         [dateFormatter setDateFormat:@"EEEE"];
         NSString *dateString = [dateFormatter stringFromDate:unixTime];
-        [self.actualDates addObject:dateString];
+        [self.daysOfWeek addObject:dateString];
     }
 }
 
 -(void)setUpLocationGetter
 {
-    //  ------------------- Spinner --------------------
-    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.spinner.frame = CGRectMake(200, 150, 50, 50);
-    [self.view addSubview:self.spinner];
-    [self.spinner startAnimating];	// make it spin
-    //		[self.spinner stopAnimating];	// make it stop spinning
-    
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;	// the better the accuracy = more battery
+    
     
     // if this 'block' of code runs on a device running iOS >8, then it will CRASH!
     // -- block
@@ -114,17 +148,6 @@
     //		[self.locationManager stopUpdatingLocation];
 }
 
--(void)updateLatitude:(CGFloat)latitude
-{
-//    self.latitude.text = [NSString stringWithFormat:@"Latitude: %f", latitude];
-    NSLog(@"Latitude: %f", latitude);
-}
--(void)updateLongitude:(CGFloat)longitude
-{
-//    self.longitude.text = [NSString stringWithFormat:@"Longitude %f", longitude];
-    NSLog(@"Longitude: %f", longitude);
-}
-
 #pragma mark CLLocationManagerDeleate Methods
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
@@ -135,13 +158,14 @@
     if(newestLocation.horizontalAccuracy <= 100)
     {
         [self.locationManager stopUpdatingLocation];
-//        [self updateLatitude:newestLocation.coordinate.latitude];
-//        [self updateLongitude:newestLocation.coordinate.longitude];
         self.latitude = newestLocation.coordinate.latitude;
         self.longitude = newestLocation.coordinate.longitude;
         NSLog(@"Latitude: %f", self.latitude);
         NSLog(@"Longitude: %f", self.longitude);
-        [self getWeatherForecast];
+        if (!self.networkBeenCalled)
+        {
+            [self getWeatherForecast];
+        }
     }
     //	NSLog(@"location: %@", newestLocation);
 }

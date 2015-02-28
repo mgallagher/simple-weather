@@ -10,10 +10,10 @@
 		4C4BFDB21A9D5FDF00FE845D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4BFDB11A9D5FDF00FE845D /* main.m */; };
 		4C4BFDB51A9D5FDF00FE845D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4BFDB41A9D5FDF00FE845D /* AppDelegate.m */; };
 		4C4BFDB81A9D5FDF00FE845D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4BFDB71A9D5FDF00FE845D /* ViewController.m */; };
-		4C4BFDBB1A9D5FDF00FE845D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C4BFDB91A9D5FDF00FE845D /* Main.storyboard */; };
 		4C4BFDBD1A9D5FDF00FE845D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4BFDBC1A9D5FDF00FE845D /* Images.xcassets */; };
 		4C4BFDC01A9D5FDF00FE845D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C4BFDBE1A9D5FDF00FE845D /* LaunchScreen.xib */; };
 		4C4BFDCC1A9D5FE000FE845D /* Assignment_5Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4BFDCB1A9D5FE000FE845D /* Assignment_5Tests.m */; };
+		4CE9ECF11AA181C1006198F3 /* WeatherForecastCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9ECF01AA181C1006198F3 /* WeatherForecastCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,12 +34,13 @@
 		4C4BFDB41A9D5FDF00FE845D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		4C4BFDB61A9D5FDF00FE845D /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		4C4BFDB71A9D5FDF00FE845D /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		4C4BFDBA1A9D5FDF00FE845D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4C4BFDBC1A9D5FDF00FE845D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		4C4BFDBF1A9D5FDF00FE845D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		4C4BFDC51A9D5FE000FE845D /* Assignment 5Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Assignment 5Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C4BFDCA1A9D5FE000FE845D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C4BFDCB1A9D5FE000FE845D /* Assignment_5Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Assignment_5Tests.m; sourceTree = "<group>"; };
+		4CE9ECEF1AA181C1006198F3 /* WeatherForecastCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherForecastCell.h; sourceTree = "<group>"; };
+		4CE9ECF01AA181C1006198F3 /* WeatherForecastCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherForecastCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +84,8 @@
 			children = (
 				4C4BFDB61A9D5FDF00FE845D /* ViewController.h */,
 				4C4BFDB71A9D5FDF00FE845D /* ViewController.m */,
-				4C4BFDB91A9D5FDF00FE845D /* Main.storyboard */,
+				4CE9ECEF1AA181C1006198F3 /* WeatherForecastCell.h */,
+				4CE9ECF01AA181C1006198F3 /* WeatherForecastCell.m */,
 				4C4BFDBC1A9D5FDF00FE845D /* Images.xcassets */,
 				4C4BFDBE1A9D5FDF00FE845D /* LaunchScreen.xib */,
 				4C4BFDAF1A9D5FDF00FE845D /* Supporting Files */,
@@ -199,7 +201,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C4BFDBB1A9D5FDF00FE845D /* Main.storyboard in Resources */,
 				4C4BFDC01A9D5FDF00FE845D /* LaunchScreen.xib in Resources */,
 				4C4BFDBD1A9D5FDF00FE845D /* Images.xcassets in Resources */,
 			);
@@ -222,6 +223,7 @@
 				4C4BFDB81A9D5FDF00FE845D /* ViewController.m in Sources */,
 				4C4BFDB51A9D5FDF00FE845D /* AppDelegate.m in Sources */,
 				4C4BFDB21A9D5FDF00FE845D /* main.m in Sources */,
+				4CE9ECF11AA181C1006198F3 /* WeatherForecastCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,14 +246,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		4C4BFDB91A9D5FDF00FE845D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4C4BFDBA1A9D5FDF00FE845D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		4C4BFDBE1A9D5FDF00FE845D /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -414,6 +408,7 @@
 				4C4BFDD11A9D5FE000FE845D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4C4BFDD21A9D5FE000FE845D /* Build configuration list for PBXNativeTarget "Assignment 5Tests" */ = {
 			isa = XCConfigurationList;
@@ -422,6 +417,7 @@
 				4C4BFDD41A9D5FE000FE845D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
