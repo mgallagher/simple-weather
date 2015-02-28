@@ -11,13 +11,16 @@
 
 @interface ViewController () <CLLocationManagerDelegate>
 
-@property CGFloat latitude;
-@property CGFloat longitude;
-@property BOOL weHaveCoordinates;
+@property (nonatomic) CGFloat latitude;
+@property (nonatomic) CGFloat longitude;
+@property (nonatomic) NSString* cityName;
+@property (nonatomic, strong) NSMutableArray *temperatures;
+@property (nonatomic, strong) NSMutableArray *weatherIcons;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (weak, nonatomic) IBOutlet UICollectionView *thing;
 @property (weak, nonatomic) IBOutlet UICollectionView *test;
+@property (nonatomic, retain) NSDictionary *jsonResponse;
 
 @end
 
@@ -29,36 +32,54 @@
     if(self)
     {
         self.view.backgroundColor = [UIColor whiteColor];
-        self.weHaveCoordinates = NO;
-        [self setUpLocationGetter];
-        while (self.weHaveCoordinates)
-        {
-            [self getWeatherForecast];
-        }
-        
+//        [self setUpLocationGetter];
+        [self getWeatherForecast];
     }
+    NSLog(@"Done with program");
     return self;
 }
 
 -(void)getWeatherForecast
 {
+    self.latitude = 41.681599;
+    self.longitude = -111.822998;
+    
     NSURLSession *session = [NSURLSession sharedSession];
     NSString *weatherRequest = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&units=imperial&APPID=3c045718f8871c3007d06f0e24cb09e2", self.latitude, self.longitude];
     NSLog(@"URL: %@", weatherRequest);
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:weatherRequest]];
-    // for form post data do the following:
-    //	@"key1=param1&key2=param2...ect"
-//    NSData *postData = [@"username=user1&password=pass1" dataUsingEncoding:NSUTF8StringEncoding];
-//    [request setHTTPBody:postData];
-//    request.HTTPMethod = @"POST";
-    
+
+//    lat: 41.681599
+//    lon: -111.822998
+
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:
-                                      ^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        ^(NSData *data, NSURLResponse *response, NSError *error) {
+            self.jsonResponse = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+
+            self.cityName = [self.jsonResponse valueForKeyPath:@"city.name"];
+            self.weatherIcons = [[NSMutableArray alloc] init];
+            self.temperatures = [[NSMutableArray alloc] init];
+//             NSArray* weatherIDs = [[[[self.jsonResponse valueForKeyPath:@"list.weather"] firstObject] objectForKey:@"icon"] integerValue];
+             NSMutableArray *weatherData = [self.jsonResponse objectForKey:@"list"];
+            NSDictionary *indexDict = [weatherData objectAtIndex:0];
+             NSArray *weatherDataArr = [weatherData valueForKeyPath:@"icon"];
+            // NSDictionary *firstItem = [weatherData firstObject];
+            // NSDictionary *weatherIcon = [weatherData valueForKey:@"icon"];
+            
+            // NSString *icon = [weatherDictionaryData objectForKey:@"icon"];
+            self.temperatures = [self.jsonResponse valueForKeyPath:@"list.temp.day.0"];
+
+            // NSDictionary *testing = [self.jsonResponse valueForKeyPath:@"list.weather.icon"];
+            // NSArray *hellooo = [[[_jsonResponse valueForKey:@"list"] valueForKey:@"weather"] valueForKey:@"id"];
+            for (NSDictionary *listItems in self.jsonResponse[@"list"])
+            {
+                // NSLog(@"id: %@", [listItems valueForKeyPath:@"weather.id"][0]);
+                [self.weatherIcons addObject:[listItems valueForKeyPath:@"weather.icon"][0]];
+                // NSLog(@"temp: %@", [listItems valueForKeyPath:@"temp.day"]);
+                // [self.temperatures addObject:[listItems valueForKeyPath:@"temp.day"]];
+            }
     }];
-    // to make the call to the endpoint, you must call "resume" on the DataTask
     [dataTask resume];
-    NSLog(@"Done");
 }
 
 -(void)setUpLocationGetter
@@ -122,7 +143,7 @@
         self.longitude = newestLocation.coordinate.longitude;
         NSLog(@"Latitude: %f", self.latitude);
         NSLog(@"Longitude: %f", self.longitude);
-        self.weHaveCoordinates = YES;
+        [self getWeatherForecast];
     }
     //	NSLog(@"location: %@", newestLocation);
 }
