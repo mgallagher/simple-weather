@@ -15,6 +15,7 @@
 @property (nonatomic) CGFloat latitude;
 @property (nonatomic) CGFloat longitude;
 @property (nonatomic) NSString* cityName;
+@property (nonatomic) UILabel* cityLabel;
 @property (nonatomic, strong) NSArray *maxTemps;
 @property (nonatomic, strong) NSArray *minTemps;
 @property (nonatomic, strong) NSArray *unixDates;
@@ -42,8 +43,6 @@
         self.count = 0;
         self.networkBeenCalled = NO;
         [self setUpLocationGetter];
-//        [self getWeatherForecast];
-//        [self setUpCollectionView];
     }
     return self;
 }
@@ -71,9 +70,21 @@
             NSArray *unixDates = [self.jsonResponse valueForKeyPath:@"list.dt"];
             [self convertDates:unixDates];
             NSLog(@"Done parsing JSON");
+            
             // Collection View
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self setUpCollectionView];
+                
+                // City
+                UIFont *labelFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:45];
+                UILabel *city = [[UILabel alloc] initWithFrame:CGRectMake(35, 45, 300, 80)];
+                city.text = self.cityName;
+                city.font = labelFont;
+                city.textAlignment = NSTextAlignmentCenter;
+                [self.view addSubview:city];
+                
+                // High and low temps
+                
             });
             
         }];
@@ -96,9 +107,7 @@
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    
     return self.daysOfWeek.count-1;
-//    return 6;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -108,10 +117,14 @@
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSInteger count = indexPath.row;
     WeatherForecastCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     cell.backgroundColor = [UIColor grayColor];
-    [cell setDayLabel:[self.daysOfWeek objectAtIndex:self.count]];
-    self.count++;
+    [cell setDayLabel:[self.daysOfWeek objectAtIndex:count]];
+    [cell setDayIcon:[self.weatherIcons objectAtIndex:count]];
+    int highTemp = [[self.maxTemps objectAtIndex:count] intValue];
+    int lowTemp = [[self.minTemps objectAtIndex:count] intValue];
+    [cell setHighLowTempLabel:highTemp andLowTemp:lowTemp];
     return cell;
 }
 

@@ -11,5 +11,7 @@
 @interface WeatherForecastCell : UICollectionViewCell
 
 -(void)setDayLabel:(NSString*)text;
-
+-(void)setDayIcon:(NSString*)icon;
+-(void)setHighLowTempLabel:(NSInteger*) highTempInt andLowTemp:(NSInteger*)lowTempInt;
+//(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 @end
