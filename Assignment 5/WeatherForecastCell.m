@@ -28,11 +28,11 @@
         self.day.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:self.day];
         
-        self.lowTemp = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, 50, 50)];
+        self.lowTemp = [[UILabel alloc] initWithFrame:CGRectMake(5, 90, 30, 30)];
         self.lowTemp.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:self.lowTemp];
         
-        self.highTemp =[[UILabel alloc] initWithFrame:CGRectMake(95, 90, 50, 50)];
+        self.highTemp =[[UILabel alloc] initWithFrame:CGRectMake(110, 90, 30, 30)];
         self.highTemp.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:self.highTemp];
         
@@ -59,7 +59,7 @@
 {
     NSString* highTempString = [NSString stringWithFormat:@"%ld", (long)highTempInt];
     NSString* lowTempString = [NSString stringWithFormat:@"%ld", (long)lowTempInt];
-    self.labelFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+    self.labelFont = [UIFont fontWithName:@"HelveticaNeue" size:20];
     self.highTemp.text = highTempString;
     self.lowTemp.text = lowTempString;
     self.highTemp.font = self.labelFont;

@@ -53,11 +53,11 @@
     NSURLSession *session = [NSURLSession sharedSession];
     NSString *weatherRequest = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?lat=%f&lon=%f&cnt=7&units=imperial&APPID=3c045718f8871c3007d06f0e24cb09e2", self.latitude, self.longitude];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:weatherRequest]];
+//    Logan, UT (for debugging):
 //    lat: 41.681599
 //    lon: -111.822998
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:
         ^(NSData *data, NSURLResponse *response, NSError *error) {
-            // Begin magical block
             self.jsonResponse = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             self.cityName = [self.jsonResponse valueForKeyPath:@"city.name"];
             self.maxTemps = [self.jsonResponse valueForKeyPath:@"list.temp.max"];
@@ -71,7 +71,7 @@
             [self convertDates:unixDates];
             NSLog(@"Done parsing JSON");
             
-            // Collection View
+            // Work on collection view while we grab the data
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self setUpCollectionView];
                 
@@ -82,9 +82,6 @@
                 city.font = labelFont;
                 city.textAlignment = NSTextAlignmentCenter;
                 [self.view addSubview:city];
-                
-                // High and low temps
-                
             });
             
         }];
@@ -93,12 +90,10 @@
 
 -(void)setUpCollectionView
 {
-//    self.numberArray = @[@"1", @"2", @"4", @"3", @"5"];
     self.collectionView = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
-    // contentInset -> gives a boarder to the collectionview
     self.collectionView.contentInset = UIEdgeInsetsMake(170, 30, 0, 30);
     [self.collectionView registerClass:[WeatherForecastCell class] forCellWithReuseIdentifier:@"cell"];
     [self.view addSubview:self.collectionView];
@@ -145,28 +140,21 @@
 {
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;	// the better the accuracy = more battery
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
     
-    
-    // if this 'block' of code runs on a device running iOS >8, then it will CRASH!
-    // -- block
-    if([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse)
-    {	// this is required for iOS 8 only!
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse)
+    {
         [self.locationManager requestWhenInUseAuthorization];
     }
-    // -- end block
+
     [self.locationManager startUpdatingLocation];
-    
-    // NOTE: to stop updating the location, use:
-    //		[self.locationManager stopUpdatingLocation];
 }
 
 #pragma mark CLLocationManagerDeleate Methods
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *newestLocation = [locations lastObject];
-    
-    // the property "horizontalAccuracy on a CLLocation object will tell you how accurate it is in meters
+
     NSLog(@"Accuracy: %@", @(newestLocation.horizontalAccuracy));
     if(newestLocation.horizontalAccuracy <= 100)
     {
@@ -180,14 +168,11 @@
             [self getWeatherForecast];
         }
     }
-    //	NSLog(@"location: %@", newestLocation);
 }
 
-// if an error is thrown, the location will STOP being updated.
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     
 }
-
 
 @end
